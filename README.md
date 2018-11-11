@@ -88,3 +88,24 @@
       Model1.objects.filter(id=1) # =pk
       Model1.objects.filter(column1__startswith='somechar')
     ```  
+  * ##### Admin
+    ###### Create admin account
+    ```bash
+      python manage.py createsuperuser
+    ```
+    ######
+    ###### To display models on admin site
+    ```python
+      # In app admin.py
+      from .models import Model1
+      admin.site.register(Model1)
+    ```
+  * ##### Display data detail
+    ```python
+      # in app urls.py
+      path('<int:model1_id>', views.detail, name='detail'),
+      # in app views.py
+      def detail(request, model1_id):
+          return HttpResponse("some info in html")
+    ```
+      
