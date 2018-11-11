@@ -86,4 +86,5 @@
       # filter
       Model1.objects.filter(column1="someinfo")
       Model1.objects.filter(id=1) # =pk
+      Model1.objects.filter(column1__startswith='somechar')
     ```  
