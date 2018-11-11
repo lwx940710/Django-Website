@@ -82,4 +82,8 @@
       a.column1
       a.column2
       a.id # primary key, can also be a.pk
+      
+      # filter
+      Model1.objects.filter(column1="someinfo")
+      Model1.objects.filter(id=1) # =pk
     ```  
