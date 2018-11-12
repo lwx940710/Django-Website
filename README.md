@@ -102,9 +102,9 @@
     ```
   * ##### Display data detail
     ```python
-      # in app urls.py
+      # In app urls.py
       path('<int:model1_id>', views.detail, name='detail'),
-      # in app views.py
+      # In app views.py
       def detail(request, model1_id):
           return HttpResponse("some info in html")
     ```
