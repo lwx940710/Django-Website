@@ -108,4 +108,105 @@
       def detail(request, model1_id):
           return HttpResponse("some info in html")
     ```
+  * ##### Connect to database
+    ```python
+      # In app views.py
+      from .models import Model1
       
+      def index(request):
+          all_models = Model1.objects.all()
+          html = ''
+          for model in all_models:
+              url = '/appname/' + str(model.pk) + '/'
+              html += '<a href="' + url + '">' + model.title + '</a><br>'
+          return HttpResponse(html)
+    ```
+   * ##### Template to separate html from python
+     ###### Create template(Default)
+     1. In app folder, create a new directory "templates"
+     2. In "templates", create a new directory "appname"
+     3. In "appname", create html5 templates
+     ###### Import template
+     ```python
+       # In app views.py
+       from django.template import loader
+     
+       def index(request)
+           all_models = Model1.objects.all()
+           template = loader.get_template('appname/index.html')
+           context = {
+               'all_models': all_models,
+           }
+           return HttpResponse(template.render(context, request))
+           
+       # In index.html
+       {% if all_albums %}
+           <ul>
+               {% for model in all_models %}
+               <li><a href="/appname/{{ model.id }}/">{{ model.title }}</a><li>
+               {% endfor %}
+           <ul>
+       {% else %}
+           <h3>No items</h3>
+       {% endif %}
+     ```
+   * ##### Render template shortcut
+     ```python
+       # In app views.py
+       # Instead of importing template
+       from django.shortcuts import render
+       
+       def index(request):
+           all_models = Model1.objects.all()
+           context = {
+               'all_models': all_models,
+           }
+           return render(request, 'appname/index.html', context) # render() will automatically create valid HttpResponse
+     ```
+   * ##### Raise a 404 error
+     ```python
+       # In app views.py
+       from django.http import Http404
+       
+       def detail(request, model_id):
+           try:
+               model = Model1.objects.get(pk=model_id)
+           except Model.DoesNotExist:
+               raise Http404("Item does not exist")
+           return render(request, 'appname/detail.html', {'model': model}) # {'model': model} can be used when it's the only entry in context
+     ```
+   * ##### Add Model2 to database
+     ```python
+       # In app models.py
+       class Model2(models.Model):
+           id = models.ForeignKey(Model1, on_delete=models.CASCADE)
+           title = models. CharField(max_length=10)
+           column2 = models. fieldtype(max_length=100)
+           
+           def __str__(self):
+               return self.title + ' - ' + str(self.id)
+       
+       # In app admin.py
+       from .models import Model2
+       
+       admin.site.register(Model2)
+     ```
+     ```bash
+       # If the model structure is changed
+       python manage.py makemigration appname
+       python manage.py migrate
+     ```
+     ```bash
+       # To add data
+       python manage.py shell
+       from appname.models import Model1, Model2
+       
+       model1 = Model1.objects.get(pk=1)
+       model2 = Model()
+       model2.id = model1
+       ...
+     ```
+     
+       
+       
+       
