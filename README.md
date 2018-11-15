@@ -138,7 +138,8 @@
                'all_models': all_models,
            }
            return HttpResponse(template.render(context, request))
-           
+     ```
+     ```html
        # In index.html
        {% if all_albums %}
            <ul>
@@ -176,10 +177,11 @@
            return render(request, 'appname/detail.html', {'model': model}) # {'model': model} can be used when it's the only entry in context
      ```
    * ##### Add Model2 to database
+     ###### Create Model2
      ```python
        # In app models.py
        class Model2(models.Model):
-           id = models.ForeignKey(Model1, on_delete=models.CASCADE)
+           m1 = models.ForeignKey(Model1, on_delete=models.CASCADE)
            title = models. CharField(max_length=10)
            column2 = models. fieldtype(max_length=100)
            
@@ -203,9 +205,34 @@
        
        model1 = Model1.objects.get(pk=1)
        model2 = Model()
-       model2.id = model1
+       model2.m1 = model1
        ...
      ```
+     ###### Get related object set
+     ```bash
+       python manage.py shell
+       from appname.models import Model1, Model2
+       
+       model1 = Model1.objects.get(pk=1)
+       model1.m1_set.all()
+       model1.m1_set.count() # return the number of items related to model1 in Model2
+       
+       # Another way to add data - create()
+       album1.song_set.create() # specify every field besides m1
+     ```
+   * ##### Create detail template
+     ```html
+       <body>
+           <h1>{{ model1.column1 }}</h1>
+           <h2>{{ model1.column2 }}</h2>
+           <ul>
+               {% for model in model1.m1_set.all %}
+                   <li>{{ model.title }} - {{ model.column2 }}</li>
+               {% endfor %}
+           </ul>
+       </body>
+     ```
+   
      
        
        
